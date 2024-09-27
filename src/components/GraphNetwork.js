@@ -107,19 +107,23 @@ const GraphNetwork = () => {
   }, [nodes, edges]);
 
   const addNode = () => {
+    // If `nodes` array is empty
     if (nodes.length === 0) {
-      // If there are no nodes, create the first one
+      // Initialize `newNode` with an `id`, `x` and `y` coordinates
       const newNode = { id: 1, x: 50, y: 200 };
-       // Set nodes to only the first node
-      setNodes([newNode]);      
+      // Create a new array with `[]` and add `newNode` into `nodes` array
+      setNodes([newNode]);
+    // If `nodes` array has less than 6 elements       
     } else if (nodes.length < 6) {
       // Get the index of the last node in the array and store in `lastNode` variable
       const lastNode = nodes[nodes.length - 1];
+      // Initialize the contents of the new node
       const newNode = {
         id: lastNode.id + 1, // Increment the current `id` with 1
         x: lastNode.x + 100, // Increment the x coordinate of the `lastNode` with 100px (to the right)
         y: 200, // Maintain the same y coordinate
       };
+      // Append newly created node into the array
       setNodes(
         [
         ...nodes // Spread operator to spread elements from old array into new array
@@ -167,15 +171,37 @@ const GraphNetwork = () => {
   
 
   const removeNode = () => {
+    // If `nodes` array is empty
     if (nodes.length > 0) {
-      setNodes(nodes.slice(0, -1)); // Remove the last node
-      setEdges(edges.filter(edge => edge.source !== nodes[nodes.length - 1].id && edge.target !== nodes[nodes.length - 1].id)); // Remove associated edges
+      // `slice` method creates a shallow copy of the `nodes` array
+      setNodes(nodes.slice
+        // 0 means the copy starts from the first element (index 0)
+        // -1 means it copies all elements except the last one
+        (0, -1)
+      );
+      // If nodes = [1, 2, 3, 4], after calling setNodes(nodes.slice(0, -1)), the new array will be [1, 2, 3]
+      
+      // Upon removing the node, remove the edge as well
+      setEdges(edges.filter(edge => 
+        // It checks if the source or target of each edge doesn't match the id of the last node
+        //edge.source !== nodes[nodes.length - 1].id && 
+        edge.target !== nodes[nodes.length - 1].id
+      )
+      );
+      // If the last node is id: 3 and there are edges like { source: 2, target: 3 } or { source: 3, target: 1 }, 
+      // these edges will be removed since they are connected to the last node
     }
   };
 
   const removeEdge = () => {
+    // If `edges` array is empty
     if (edges.length > 0) {
-      setEdges(edges.slice(0, -1)); // Remove the last edge
+      // `slice` method creates a shallow copy of the `nodes` array
+      setEdges(edges.slice
+        // 0 means the copy starts from the first element (index 0)
+        // -1 means it copies all elements except the last one
+        (0, -1)
+      ); // Remove the last edge
     }
   };
 
