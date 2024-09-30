@@ -23,17 +23,25 @@ const GraphNetwork = () => {
 
   /* Responsive Screen */
   useEffect(() => {
+    // This function triggers whenever the window is resized
     const handleResize = () => {
+      // Retreive the parent element/container of `svgRef` which is `graph-network-container`
       const container = svgRef.current.parentElement;
+      // Checks if `container` exists or else no further code will run
       if (container) {
-        setDimensions({ width: container.clientWidth, height: 400 });
+        // Updates `dimensions` state with the width of the parent container and a fixed height of 400px
+        setDimensions(
+          // container: Refers to the parent element of the svg, which is the <div className="graph-network-container">
+          // clientWidth: Gives the width of the container's visible content area, measured in pixels
+          { width: container.clientWidth, height: 400 }
+        );
       }
     };
 
-    // Set initial dimensions
+    // Calls `handleResize` function immediately to set the initial dimensions when component mounts
     handleResize();
 
-    // Add event listener for window resize
+    // Add event listener to `window` object on the browser event called `resize` that triggers whenever the window is resized
     window.addEventListener('resize', handleResize);
 
     // Clean up event listener on component unmount
@@ -41,17 +49,24 @@ const GraphNetwork = () => {
   }, []);
 
   useEffect(() => {
+    // Selects the current SVG element being referenced using D3.js, to render the graph
     const svg = d3.select(svgRef.current);
+    
+    // Clears all the previous elements inside the SVG
+    // Because new elements will be added without clearing old ones everytime `useEffect` runs 
     svg.selectAll('*').remove();
 
-    // Create a group to hold the zoomable elements
+    // A <g> element is appended to the SVG
+    // This group will contain all the graph elements (nodes, edges)
+    // and will be the target for zoom and pan transformations
     const g = svg.append('g');
 
-    // Set up zoom behavior
+    // Set up zoom behavior for SVG
     svg.call(d3.zoom()
-      .scaleExtent([0.5, 5]) // Set zoom limits
+      .scaleExtent([0.5, 5]) // Set zoom limits (0.5x min zoom, 5x max zoom)
       .on('zoom', (event) => {
-        g.attr('transform', event.transform); // Apply zoom to the group
+        // Appends the zoom transformation to the <g> element
+        g.attr('transform', event.transform);
       })
     );
 
