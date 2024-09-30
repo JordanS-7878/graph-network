@@ -21,7 +21,7 @@ const GraphNetwork = () => {
   // Implement `useRef` to access and manipulate DOM (Document Object Model) elements
   const [dimensions, setDimensions] = useState({ width: 1200, height: 400 });
 
-  /* Responsive Screen */
+  /* Responsive Screen (for graph container) */
   useEffect(() => {
     // This function triggers whenever the window is resized
     const handleResize = () => {
@@ -56,6 +56,7 @@ const GraphNetwork = () => {
     // Because new elements will be added without clearing old ones everytime `useEffect` runs 
     svg.selectAll('*').remove();
 
+    /* Zoom Implementation */
     // A <g> element is appended to the SVG
     // This group will contain all the graph elements (nodes, edges)
     // and will be the target for zoom and pan transformations
@@ -74,11 +75,10 @@ const GraphNetwork = () => {
     const edgesGroup = g.append('g').attr('class', 'edges');
     const nodesGroup = g.append('g').attr('class', 'nodes');
 
-    // Render edges
+    /* Render Edges */
     edgesGroup.selectAll('line')
-      .data(edges)
-      .enter()
-      .append('line')
+      .data(edges) // Binds data of edges array to line elements
+      .enter().append('line') // Create a line element for each edge in the data that does not already have one
       .attr('x1', d => nodes.find(n => n.id === d.source).x)
       .attr('y1', d => nodes.find(n => n.id === d.source).y)
       .attr('x2', d => nodes.find(n => n.id === d.target).x)
@@ -86,7 +86,7 @@ const GraphNetwork = () => {
       .attr('stroke', '#aaaaaa')
       .attr('stroke-width', 6);
 
-    // Render nodes
+    /* Render Nodes */
     const nodeElements = nodesGroup.selectAll('circle')
       .data(nodes)
       .enter()
@@ -100,11 +100,12 @@ const GraphNetwork = () => {
       .call(d3.drag() // Add drag functionality
         .on('start', dragStarted)
         .on('drag', dragged)
-      );
+    );
 
+    /* Drag Implementation */    
     function dragStarted(event, d) {
       d3.select(this).raise(); // Raise the dragged element
-    }
+    };
 
     function dragged(event, d) {
       d.x = event.x; // Update node x position
@@ -117,10 +118,11 @@ const GraphNetwork = () => {
         .attr('y1', e => nodes.find(n => n.id === e.source).y)
         .attr('x2', e => nodes.find(n => n.id === e.target).x)
         .attr('y2', e => nodes.find(n => n.id === e.target).y);
-    }
+    };
   
   }, [nodes, edges]);
 
+  /* Add Nodes Function */
   const addNode = () => {
     // If `nodes` array is empty
     if (nodes.length === 0) {
@@ -150,6 +152,7 @@ const GraphNetwork = () => {
     console.log(nodes.length);
   };
 
+  /* Add Edges Function */
   const addEdge = () => {
     if (nodes.length > 1) {
       // Loop through all consecutive nodes and add an edge between them
@@ -184,7 +187,7 @@ const GraphNetwork = () => {
     }
   };
   
-
+  /* Remove Nodes Function */
   const removeNode = () => {
     // If `nodes` array is empty
     if (nodes.length > 0) {
@@ -208,6 +211,7 @@ const GraphNetwork = () => {
     }
   };
 
+  /* Remove Edges Function */
   const removeEdge = () => {
     // If `edges` array is empty
     if (edges.length > 0) {
