@@ -1,7 +1,9 @@
-
 # Graph Network Visualization
 
 This is a simple web application built using React.js and D3.js that visualizes a graph network of nodes and edges. Users can dynamically add and remove nodes and edges by interacting with the buttons provided on the interface.
+
+**Origin / Reminder:**  
+Built as part of an interview assignment for Rajang Digital Solutions, September 24, 2024.
 
 ## Features
 
